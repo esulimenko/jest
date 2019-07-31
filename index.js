@@ -42,8 +42,8 @@ export class Essence {
 }
 
 export class Phoenix extends Essence {
-  constructor(reincarnate = true){
-    super();
+  constructor(maxAge, reincarnate = true){
+    super(maxAge);
     this.reincarnate = reincarnate;
   }
   growOld() {

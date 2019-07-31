@@ -1,55 +1,45 @@
-import { Phoenix } from './index';
+import { Phoenix, Essence } from './index';
 
-describe('Test Phoenix', () => {
+describe('Class Essence', () => {
 
-  it('get alive status', () => {
-    const phoenix = new Phoenix();
-    expect(phoenix.isAlive).toBeTruthy();
+  it('Create new Essence with custom maxAge', () => {
+    const essence = new Essence(999);
+    expect(essence.maxAge).toBe(999);
   });
 
-  it('set alive status throw error', () => {
-    const phoenix = new Phoenix();
-    expect(() => { phoenix.isAlive = true }).toThrow();
+  it('Getter isAlive exists', () => {
+    const essence = new Essence();
+    expect(essence.isAlive).toBeDefined();
   });
 
-  it('delayed call growOld without throws / isAlive = true', () => {
+  it('Getter isAlive returning true after creation new Essence', () => {
+    const essence = new Essence();
+    expect(essence.isAlive).toBeTruthy();
+  });
 
-    const phoenix = new Phoenix();
-    const delay = phoenix.constructor.timeSpeed;
+  it('Call growOld after creating new Essence', () => {
+    const spyOnGrowOld = jest.spyOn(Essence.prototype, 'growOld');
+    new Essence();
+    expect(spyOnGrowOld).toHaveBeenCalled();
+  });
 
+  it('Setter isAlive throw error', () => {
+    const essence = new Essence();
+    expect(() => { essence.isAlive = true }).toThrow();
+  });
+
+  it('Recursive calling of growOld method until isAlive is false', () => {
+    const essence = new Essence(3);
+    const spyOnGrowOld = jest.spyOn(essence, 'growOld');
+    // run all timers without delay
     jest.useFakeTimers();
+    // clear mock
+    spyOnGrowOld.mockClear();
+    essence.growOld();
+    // run all timers;
+    jest.runAllTimers();
 
-    expect(() => { phoenix.growOld() }).not.toThrow();
-
-    jest.advanceTimersByTime(delay);
-
-    expect(() => { phoenix.growOld() }).not.toThrow();
-  });
-
-  it('delayed call growOld without throws / isAlive = false', () => {
-    const phoenix = new Phoenix();
-    phoenix.maxAge = 0;
-
-    expect(() => { phoenix.growOld() }).not.toThrow();
-  });
-
-  it('growOld delay = 1sec', () => {
-    const delay = Phoenix.timeSpeed;
-    expect(delay).toBe(1000);
-  });
-
-  it('create phoenix with reincarnate = false', () => {
-    const phoenix = new Phoenix(false);
-    expect(phoenix.reincarnate).not.toBeTruthy();
-  });
-
-  it('phoenix revive after dead', () => {
-    const phoenix = new Phoenix();
-    phoenix.maxAge = 0;
-    expect(phoenix.isAlive).not.toBeTruthy();
-    phoenix.growOld();
-    expect(phoenix.isAlive).toBeTruthy();
-
+    expect(spyOnGrowOld).toHaveBeenCalledTimes(3);
   });
 
 });
