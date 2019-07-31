@@ -38,6 +38,7 @@ describe('Class Essence', () => {
   it('Recursive calling of growOld method until isAlive is false', () => {
     const essence = new Essence(3);
     const spyOnGrowOld = jest.spyOn(essence, 'growOld');
+    // clear mock
     spyOnGrowOld.mockClear();
     // run all timers without delay
     jest.useFakeTimers();
@@ -57,7 +58,7 @@ describe('Class Phoenix extends Essence', () => {
     expect(new Phoenix()).toBeInstanceOf(Essence);
   });
 
-  it('Check reincarnate property after creating new Phoenix without params', () => {
+  it('Check reincarnate property after creating new Phoenix without params, expect reincarnate = true', () => {
     const phoenix = new Phoenix();
     expect(phoenix.reincarnate).toByTruthy;
   });
